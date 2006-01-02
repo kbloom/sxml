@@ -1,0 +1,72 @@
+SXML API reference
+
+
+(parse-xml port)
+Reads from port and parses the XML.
+Returns an SXML tree.
+
+(display-xml sxml output-port)
+Convert SXML into XML and write out to output-port.
+
+(tag? tag)
+Checks if tag is a valid SXML tag.
+Returns the boolean for if it is or not.
+
+(append-list l)
+Appends the lists in the list l.
+This is useful for when you want to put multiple children
+into a node other than at the end.
+
+(get-children tag)
+Returns the list of children of a tag.
+
+(get-tag-name tag)
+Returns the name of a tag.
+
+(get-attr tag name)
+Returns the value of the attribute named name from an
+SXML tag tag if it exists.  It is false otherwise.
+
+(set-attr tag name val)
+Returns a copy of tag with the attribute named name
+set to value val.  It is inserted if it is not present.
+
+(del-attr tag name)
+Returns a copy of tag without the attribute named name.
+
+
+
+    (select-tags sxml equals)
+    (select-tags-rec sxml equals)
+    (get-text tag)
+    (get-text-rec tag)
+    (connect-tag head body)
+
+    (make-match-always)
+
+    (make-match-exact-path path)
+
+    (make-comparison comparators)
+    (make-comparison-int comparators)
+    (equals-tag-name name)
+    (value-of-text tag)
+    (make-value-of-attr attr)
+    (make-value-of-select equals value-of)
+    (make-value-of-select-rec equals value-of)
+    (make-value-of-first value-of)
+    (make-comparison-string-int value-of)
+    (make-comparison-number-int value-of)
+    (just-children branch tagname)
+    (just-text branch tagname)
+    (group-by x value-of)
+
+    (apply-templates root templates param)
+    (apply-templates-list root sxml templates param)
+    (apply-templates-children root sxml templates param)
+
+    (trim str)
+    (trim-all sxml)
+
+    (valid-attr attr)
+    (valid-tag tag)
+

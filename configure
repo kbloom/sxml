@@ -1,0 +1,78 @@
+#!/bin/sh
+#Configure so can compile and install to proper place
+
+#Set default values
+VAL_LIBPATH=/usr/lib
+VAL_BIGLOOLIBPATH=/usr/lib/bigloo/2.6a
+
+
+
+#Read commandline parameters
+while true
+do
+  param="$1"
+  shift
+
+  if [ "$#" -le 0 ]
+  then
+    break
+  fi
+
+  case "$param" in
+    -h | --help )
+      echo 'Parameters:
+--help                    This list
+--libpath <path>          Path to library
+--bigloolibpath <path>    Path to Bigloo library
+'
+      exit
+      ;;
+
+    --libpath )
+        VAL_LIBPATH="$1"
+        shift
+        SKIP_LIBPATH=1
+      ;;
+
+    --bigloolibpath )
+        VAL_BIGLOOLIBPATH="$1"
+        shift
+        SKIP_BIGLOOLIBPATH=1
+      ;;
+
+    * )
+      echo "Unknown parameter '$param'"
+      exit
+      ;;
+  esac
+done
+
+
+
+#Detect values
+echo -n -e "Detecting library path...\t"
+echo "${VAL_LIBPATH}"
+
+echo -n -e "Detecting Bigloo library path...\t"
+
+if [ -z "${SKIP_BIGLOOLIBPATH}" ]
+then
+  DETECT_BIGLOOLIBPATH="`bigloo -i /dev/stdin << EOF
+(print *default-lib-dir*)
+(quit)
+EOF`"
+  if [ -n "${DETECT_BIGLOOLIBPATH}" ]
+  then
+    VAL_BIGLOOLIBPATH="${DETECT_BIGLOOLIBPATH}"
+  fi
+fi
+echo "${VAL_BIGLOOLIBPATH}"
+
+
+
+#Write out values
+echo "Writing Makefile.config"
+echo "
+LIBPATH       = ${VAL_LIBPATH}
+BIGLOOLIBPATH = ${VAL_BIGLOOLIBPATH}
+" > Makefile.config
