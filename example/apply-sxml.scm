@@ -19,7 +19,7 @@
    ,(apply-templates-children root branch templates param)
 ) )
 
-(define (apply2 root branch templates param)
+(define (apply2 root branch templates param position)
   '(chained ())
 )
 
