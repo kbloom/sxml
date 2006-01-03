@@ -6,7 +6,7 @@
 ;Module description
 (module sxml-template
   (from
-    (sxml-match "match.scm")
+    (sxml-allmatch "allmatch.scm")
   )
   (import
     (sxml-manip "manip.scm")
@@ -49,7 +49,7 @@
         (lambda (sxml next templates position)
           (let*
             (
-              (t (all-step templates (get-tag-name sxml)))
+              (t (all-step templates sxml))
               (m (find-match t))
             )
 
@@ -96,7 +96,7 @@
     (apply-templates-list
       root
       (get-children sxml)
-      (all-step templates (get-tag-name sxml))
+      (all-step templates sxml)
       param
     )
    '()

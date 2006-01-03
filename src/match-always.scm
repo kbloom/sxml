@@ -5,6 +5,9 @@
 
 ;Module description
 (module sxml-match-always
+  (import
+    (sxml-match "match.scm")
+  )
   (export
     (make-match-always)
 ) )
@@ -18,5 +21,5 @@
     #t
   )
 
-  (cons (list take-step matches?) '())
+  (make-match take-step matches? '())
 )

@@ -5,6 +5,10 @@
 
 ;Module description
 (module sxml-match-exact
+  (import
+    (sxml-match "match.scm")
+    (sxml-manip "manip.scm")
+  )
   (export
     (make-match-exact-path path)
 ) )
@@ -14,7 +18,7 @@
     (make-match-exact-path
       (cond
         ((not (pair? obj)) '(no-match))
-        ((equal? step (car obj)) (cdr obj))
+        ((equal? (get-tag-name step) (car obj)) (cdr obj))
         (#t '(no-match))
   ) ) )
 
@@ -22,5 +26,5 @@
     (null? obj)
   )
 
-  (cons (list take-step matches?) path)
+  (make-match take-step matches? path)
 )

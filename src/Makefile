@@ -1,6 +1,6 @@
 include ../Makefile.config
 
-OBJECTS    = sxml.o parse.o display.o manip.o template.o match.o match-exact.o match-always.o trim.o sort.o verify.o
+OBJECTS    = sxml.o parse.o display.o manip.o template.o allmatch.o match.o match-exact.o match-always.o trim.o sort.o verify.o
 
 all: libsxml_s.so libsxml.a
 
@@ -33,16 +33,19 @@ display.o: display.scm manip.o
 manip.o: manip.scm
 	bigloo -c manip.scm
 
-template.o: template.scm manip.o
+template.o: template.scm manip.o allmatch.o
 	bigloo -c template.scm
+
+allmatch.o: allmatch.scm match.o match-exact.o match-always.o
+	bigloo -c allmatch.scm
 
 match.o: match.scm
 	bigloo -c match.scm
 
-match-exact.o: match-exact.scm
+match-exact.o: match-exact.scm match.o manip.o
 	bigloo -c match-exact.scm
 
-match-always.o: match-always.scm
+match-always.o: match-always.scm match.o
 	bigloo -c match-always.scm
 
 trim.o: trim.scm manip.o template.o

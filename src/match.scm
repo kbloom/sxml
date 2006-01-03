@@ -5,11 +5,8 @@
 
 ;Module description
 (module sxml-match
-  (from
-    (sxml-match-exact "match-exact.scm")
-    (sxml-match-always "match-always.scm")
-  )
   (export
+    (class match take-step matches? pos)
     (take-step obj step)
     (matches? obj)
     (all-step templates tagname)
@@ -23,12 +20,12 @@
 
 ;1st function
 (define (take-step obj step)
-  ((caar obj) (cdr obj) step)
+  ((match-take-step obj) (match-pos obj) step)
 )
 
 ;2nd function
 (define (matches? obj)
-  ((cadar obj) (cdr obj))
+  ((match-matches? obj) (match-pos obj))
 )
 
 ;Take a step in the tree
