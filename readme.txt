@@ -54,6 +54,7 @@ It is meant to combine the best features of XSLT and PHP.
 
 
 Installation
+Note: ~> denotes the prompt and should not be typed
 
 To install, do
 ~> ./configure
@@ -93,7 +94,7 @@ Note that strings are used instead of symbols.
 An SXML tag consists of:
 1) The node name
 2) The list of attributes
-3) Zero or more SXML tags and strings
+3) Zero or more children which can be SXML tags and strings
 
 Strings represent text nodes.
 Attributes are lists with each element being a cons
@@ -133,6 +134,12 @@ Warnings
 The XML reader is not strictly XML compliant.
 
 Entities are not treated specially
+<? ?>
+and
+<! >
+nodes are removed.
+Comments are done by "--" toggling, not naively:
+<! -- Comment -- off -- on -- off >
 
 The XML written out may be invalid if characters that aren't
 allowed occur in strings.  For example:

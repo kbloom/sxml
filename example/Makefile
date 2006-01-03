@@ -10,10 +10,10 @@ all: test-sxml apply-sxml
 clean:
 	rm *.o test-sxml apply-sxml 2> /dev/null || true
 
-run_test: all
+run_test: test-sxml
 	cat simple.xml | ./test-sxml
 
-run_apply: all
+run_apply: apply-sxml
 	cat simple.xml | ./apply-sxml
 
 test-sxml: test-sxml.o

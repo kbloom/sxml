@@ -34,39 +34,109 @@ set to value val.  It is inserted if it is not present.
 (del-attr tag name)
 Returns a copy of tag without the attribute named name.
 
+(select-tags sxml equals)
+Returns a list of sxml nodes from sxml 1 level deep for which
+equals returns true.
 
+(select-tags-rec sxml equals)
+Returns a list of sxml nodes from sxml of arbitrary depth for which
+equals returns true.
 
-    (select-tags sxml equals)
-    (select-tags-rec sxml equals)
-    (get-text tag)
-    (get-text-rec tag)
-    (connect-tag head body)
+(get-text tag)
+Returns all of the text from text nodes that are children of the given tag.
 
-    (make-match-always)
+(get-text-rec tag)
+Returns all of the text from all of the text nodes within the given tag.
 
-    (make-match-exact-path path)
+(connect-tag head body)
+Makes a tag from the tag name and attributes of the tag head,
+but the children body.
 
-    (make-comparison comparators)
-    (make-comparison-int comparators)
-    (equals-tag-name name)
-    (value-of-text tag)
-    (make-value-of-attr attr)
-    (make-value-of-select equals value-of)
-    (make-value-of-select-rec equals value-of)
-    (make-value-of-first value-of)
-    (make-comparison-string-int value-of)
-    (make-comparison-number-int value-of)
-    (just-children branch tagname)
-    (just-text branch tagname)
-    (group-by x value-of)
+(make-match-always)
+Makes a matcher that always matches.  (Like ".*")
 
-    (apply-templates root templates param)
-    (apply-templates-list root sxml templates param)
-    (apply-templates-children root sxml templates param)
+(make-match-exact-path path)
+Makes a matcher that only matches an exact path.  (No wildcards)
 
-    (trim str)
-    (trim-all sxml)
+(make-comparison comparators)
+Make a comparison function that tries comparing 2 arguments
+by each element of the comparators list in order with the
+first element being the most significant.
 
-    (valid-attr attr)
-    (valid-tag tag)
+(make-comparison-int comparators)
+Make a comparison function that tries comparing 2 arguments
+by each element of the comparators list in order with the
+first element being the most significant.
+The comparison functions should be negative for less,
+0 for equal, and positive for greater instead of
+simply true for less or false otherwise.
+
+(equals-tag-name name)
+Returns a function that takes a tag and checks if it has
+the same name as the given name.
+
+(value-of-text tag)
+Returns the text of a tag.
+Equivalent to get-text-rec.
+
+(make-value-of-attr attr)
+Makes a function that will take a tag
+and return the value of the specified attribute
+or else an empty string.
+
+(make-value-of-select equals value-of)
+Selects tags according to equals 1 level deep, applies value-of to them,
+and then concatenates the resulting strings.
+
+(make-value-of-select-rec equals value-of)
+Selects tags according to equals arbitrarily deep, applies value-of to them,
+and then concatenates the resulting strings.
+
+(make-value-of-first value-of)
+Makes a function that attempts to take the value-of each element of a list.
+It returns the first value for which it succeeds or false if it fails.
+
+(make-comparison-string-int value-of)
+Makes a function that takes the value-of and then does a string
+comparsion on the result.  The result of the comparison is returned
+as -1, 0, or 1 for <,=,>.
+
+(make-comparison-number-int value-of)
+Makes a function that takes the value-of and then does a numerical
+comparsion on the result by converting the strings into numbers.
+The result of the comparison is returned as -1, 0, or 1 for <,=,>.
+
+(just-children branch tagname)
+Returns the children of the children of branch whose name is tagname.
+
+(just-text branch tagname)
+Returns the text of the children of branch whose name is tagname.
+
+(group-by x value-of)
+Groups x into lists of equal value-of values.
+
+(apply-templates root templates param)
+Apply templates to sxml tree from root passing param
+as the parameter to those templates.
+This is intended to be the function to start applying a template originally.
+templates = list of (matcher . function)
+
+(apply-templates-list root sxml templates param)
+Apply templates to a list of tags.
+
+(apply-templates-children root sxml templates param)
+Apply templates to the children of a tag.
+This is intended to continue applying a template to a subtree.
+
+(trim str)
+Change leading and trailing whitespace into a single space.
+
+(trim-all sxml)
+Trim an entire sxml tree.
+
+(valid-attr attr)
+Checks if the attributes of a tag are valid.
+
+(valid-tag tag)
+Checks if a tag is valid, including its children.
 
