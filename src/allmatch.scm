@@ -8,6 +8,7 @@
   (from
     (sxml-match        "match.scm")
     (sxml-match-exact  "match-exact.scm")
+    (sxml-match-path   "match-path.scm")
     (sxml-match-always "match-always.scm")
 ) )
 

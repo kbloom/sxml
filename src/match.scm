@@ -12,10 +12,6 @@
     (all-step templates tagname)
 ) )
 
-;Simple class
-;(vtable . struct)
-;vtable -> (take-step matches?)
-
 ;Interface definition
 
 ;1st function
