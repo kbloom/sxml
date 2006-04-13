@@ -191,7 +191,7 @@
             (make-value-of-select (equals-tag-name "sub") (make-value-of-attr "tie"))
           )
           (criteria
-            (make-comparison-int
+            (make-comparison-int-desc
               (list
                 (make-comparison-string-int value-of-1)
                 (make-comparison-string-int value-of-2)
@@ -203,7 +203,7 @@
             (sort tags criteria)
         ) )
 
-        (print "-- Sort by text of sub-tag with attribute as tie-breaker --")
+        (print "-- Sort by text of sub-tag with attribute as tie-breaker (reversed) --")
         (print "Sorted tags:")
         (display-xml (connect-tag unsorted sorted) (current-output-port))
         (separator)

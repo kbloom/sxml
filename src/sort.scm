@@ -11,6 +11,7 @@
   (export
     (make-comparison comparators)
     (make-comparison-int comparators)
+    (make-comparison-int-desc comparators)
     (reverse-sort-order-int comp)
     (equals-tag-name name)
     (value-of-text tag)
@@ -55,6 +56,22 @@
 (define (make-comparison-int comparators)
   (lambda (x y)
     (do-comparison-int comparators x y) ;Curry to other function
+) )
+
+(define (do-comparison-int-desc comparators x y)
+  (if (pair? comparators)
+    (let ((r ((car comparators) x y)))
+      (cond
+        ((> r 0) #t)                                   ;-1, <
+        ((< r 0) #f)                                   ; 1, >
+        (#t (do-comparison-int-desc (cdr comparators) x y)) ; 0, =, next compare
+    ) )
+    #f
+) )
+
+(define (make-comparison-int-desc comparators)
+  (lambda (x y)
+    (do-comparison-int-desc comparators x y) ;Curry to other function
 ) )
 
 ;Make comparison go in opposite direction
