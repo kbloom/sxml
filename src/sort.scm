@@ -11,6 +11,7 @@
   (export
     (make-comparison comparators)
     (make-comparison-int comparators)
+    (reverse-sort-order-int comp)
     (equals-tag-name name)
     (value-of-text tag)
     (make-value-of-attr attr)
@@ -54,6 +55,12 @@
 (define (make-comparison-int comparators)
   (lambda (x y)
     (do-comparison-int comparators x y) ;Curry to other function
+) )
+
+;Make comparison go in opposite direction
+(define (reverse-sort-order-int comp)
+  (lambda (x y)
+    (- (comp x y))
 ) )
 
 (define (equals-tag-name name)

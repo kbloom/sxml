@@ -121,7 +121,7 @@
           (criteria 
             (make-comparison-int
               (list
-                (make-comparison-string-int value-of)
+                (reverse-sort-order-int (make-comparison-string-int value-of))
           ) ) )
           (tags
             (select-tags-rec trimmed (equals-tag-name "inner"))
@@ -130,7 +130,7 @@
             (sort tags criteria)
         ) )
 
-        (print "-- Sort by tags attribute --")
+        (print "-- Sort by tags attribute (reversed) --")
         (print "Unsorted value of tags:")
         (print (map value-of tags))
         (separator)
