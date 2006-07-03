@@ -13,6 +13,8 @@
     (coalesce x y)
     (append-list l)
     (string-append-list l)
+    (hashtable-keyval->vector h)
+    (hashtable-key->vector h)
     (get-children tag)
     (get-tag-name tag)
     (get-attr tag name)
@@ -27,7 +29,7 @@
 
 ;
 ;
-;Helper functions to prevent taking car and cdr of non-pairs
+;Miscellaneous Helper functions
 ;
 ;
 
@@ -72,6 +74,35 @@
   (if (pair? l)
     (string-append (car l) (string-append-list (cdr l)))
     l
+) )
+
+(define (hashtable-keyval->vector h)
+  (let
+    ( (index 0)
+      (ret (make-vector (hashtable-size h)))
+    )
+
+    ;Have to use conventional for loop because restricted for-each format
+    (hashtable-for-each h
+      (lambda (key val)
+        (vector-set! ret index (cons key val))
+        (set! index (+ index 1))
+    ) )
+    ret
+) )
+
+(define (hashtable-key->vector h)
+  (let
+    ( (index 0)
+      (ret (make-vector (hashtable-size h)))
+    )
+
+    (hashtable-for-each h
+      (lambda (key val)
+        (vector-set! ret index key)
+        (set! index (+ index 1))
+    ) )
+    ret
 ) )
 
 ;

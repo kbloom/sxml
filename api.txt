@@ -58,6 +58,12 @@ Makes a matcher that always matches.  (Like ".*")
 (make-match-exact-path path)
 Makes a matcher that only matches an exact path.  (No wildcards)
 
+(make-match-path path)
+Makes a matcher that matches a regular-expression-like language.
+This is the recommended matcher.
+* matches 0 or more tag names and ? matches 1 tag name.
+Example: (* "table" * "th")
+
 (make-comparison comparators)
 Make a comparison function that tries comparing 2 arguments
 by each element of the comparators list in order with the

@@ -45,7 +45,7 @@ match.o: match.scm
 match-exact.o: match-exact.scm match.o manip.o
 	bigloo -c match-exact.scm
 
-match-path.o: match-path.scm match.o manip.o
+match-path.o: match-path.scm match.o manip.o macro.sch
 	bigloo -c match-path.scm
 
 match-always.o: match-always.scm match.o
