@@ -26,13 +26,13 @@
 ) )
 
 ;Structs used
-(structure fsm states finalmask startstate alphahash)
-(structure deter index state) ;For numbering the states
+(define-struct fsm states finalmask startstate alphahash)
+(define-struct deter index state) ;For numbering the states
 ;states is a vector (state) of vector (transition) of int (destination state)
 ;alphahash is hashtable of string -> index, last+1=other
 
-(structure edge letter transition)
-(structure nfsm states finalmask alphahash)
+(define-struct edge letter transition)
+(define-struct nfsm states finalmask alphahash)
 ;states is a vector of edges
 ;letter can be number from alphahash, ? for any, or epsilon for no symbol
 ;start at state 0
@@ -77,7 +77,7 @@
   (let*
     ( (alpha (get-alphahash exp))
       (numstates (+ (length exp) 1))
-      (n (construct-nfsm (make-vector numstates)
+      (n (nfsm (make-vector numstates)
             (bit-lsh 1 (- numstates 1)) alpha))
     )
 
@@ -89,15 +89,15 @@
                 (vector-set! (nfsm-states n) i
                   (cond
                     ((string? l) ;Ordinary string
-                     `(,(construct-edge (hashtable-get alpha l) (+ i 1)))
+                     `(,(edge (hashtable-get alpha l) (+ i 1)))
                     )
                     ((eq? l '?) ;Match any
-                     `(,(construct-edge '? (+ i 1)))
+                     `(,(edge '? (+ i 1)))
                     )
                     ((eq? l '*) ;Kleene star
                      `(
-                       ,(construct-edge '? i)
-                       ,(construct-edge 'epsilon (+ i 1))
+                       ,(edge '? i)
+                       ,(edge 'epsilon (+ i 1))
                     ) )
                     (#t (print "Junk in NFSM expression")) ;Something else
                 ) )
@@ -242,7 +242,7 @@
                         (explore-loop! (- i 1))
               ) ) ) ) )
 
-              (hashtable-put! hash mask (construct-deter 0 v))
+              (hashtable-put! hash mask (deter 0 v))
               (state-loop! 0)
               (explore-loop! (- (vector-length v) 1))
       ) ) ) )
@@ -311,7 +311,7 @@
 
     (dfs! startstate) ;Populate hash
     (index-loop!)     ;Index hash, set finalmask
-    (construct-fsm states finalmask
+    (fsm states finalmask
       (deter-index (hashtable-get hash startstate))
       (nfsm-alphahash n)
 ) ) )
