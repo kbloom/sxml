@@ -7,14 +7,17 @@ all: libsxml_s.so libsxml.a
 install: all
 	cp libsxml.a sxml.heap "${BIGLOOLIBPATH}/"
 	cp libsxml_s.so        "${LIBPATH}/"
+	cd "${LIBPATH}/" ; ln -s libsxml_s.so libsxml_s-${BIGLOOVERSION}.so
+
 
 clean:
-	rm *.o libsxml_s.so libsxml.a sxml.heap 2> /dev/null || true
+	rm -- *.o *.so *.a *.heap 2> /dev/null || true
 
 libsxml_s.so sxml.heap: ${OBJECTS}
 	bigloo -mkaddheap -mkaddlib \
-	  sxml.scm -addheap sxml.heap
+	  -heap-library sxml sxml.scm -addheap sxml.heap
 	ld -G -o libsxml_s.so ${OBJECTS} -lm -lc
+	ln -s libsxml_s.so libsxml_s-${BIGLOOVERSION}.so
 
 libsxml.a: ${OBJECTS}
 	ar qcv libsxml.a ${OBJECTS}
