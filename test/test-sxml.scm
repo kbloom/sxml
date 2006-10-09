@@ -64,6 +64,7 @@
            ,(map cdr parts)
 ) ) ) ) ) )
 
+;Here are all of the actual tests to run
 (test-cases
   registry
 
@@ -71,7 +72,150 @@
     (+ 1 2)
     3
   )
-)
+
+  ("Parse"
+    (parse-xml (open-input-string
+      "<html><head><title>Fluffy</title></head><body class=\"colorful\" style=\"fuzzy\">abc <br /> def</body></html>"
+    ))
+
+    ("html" ()
+      ("head" ()
+        ("title" () "Fluffy")
+      )
+      ("body" (("class"."colorful") ("style"."fuzzy"))
+        "abc "
+        ("br" ())
+        " def"
+  ) ) )
+
+  ("Parse and trim"
+    (trim-all (parse-xml (open-input-string
+      "<a>
+  Indented
+  <b>
+Enclosed
+    <c de=\"fg\" />
+  </b>
+  After
+</a>
+"
+    )))
+
+    ("a" ()
+      " Indented "
+      ("b" ()
+        " Enclosed "
+        ("c" (("de"."fg")))
+      )
+      " After "
+  ) )
+
+  ("Display"
+    (let ((str (open-output-string)))
+      (display-xml
+       '("a" ()
+          "abc"
+          ("b" (("a"."1") ("b"."2"))
+            "ghi"
+            ("c" ())
+          )
+          "def"
+        )
+        str
+      )
+      (close-output-port str)
+    )
+
+    "<a>abc<b a=\"1\" b=\"2\">ghi<c/></b>def</a>"
+  )
+
+  ("Get node name"
+    (get-tag-name '("root" () ("internal" () "text")))
+    "root"
+  )
+
+  ("Get attribute"
+    (get-attr '("root" (("mood"."odd") ("state"."happy") ("music"."earthbound")) "text") "state")
+    "happy"
+  )
+
+  ("Add attribute"
+    (set-attr '("root" (("a"."1") ("b"."2")) "text") "c" "3")
+    ("root" (("a"."1") ("b"."2") ("c"."3")) "text")
+  )
+
+  ("Change attribute"
+    (set-attr '("root" (("a"."1") ("b"."2") ("c"."3")) "text") "b" "off")
+    ("root" (("a"."1") ("b"."off") ("c"."3")) "text")
+  )
+
+  ("Delete attribute"
+    (del-attr '("root" (("a"."1") ("b"."2") ("c"."3")) "text") "a")
+    ("root" (("b"."2") ("c"."3")) "text")
+  )
+
+  ("Select nodes"
+    (select-tags
+     '("root" () ("yes" () "1") ("no" () "2") ("yes" () "3") ("no" () ("yes" () "4")) ("yes" () "5" ("yes" () "6")))
+      (lambda (x) (equal? (get-tag-name x) "yes"))
+    )
+
+    (("yes" () "1") ("yes" () "3") ("yes" () "5" ("yes" () "6")))
+  )
+
+  ("Recursively select nodes"
+    (select-tags-rec
+     '("root" () ("yes" () "1") ("no" () "2") ("yes" () "3") ("no" () ("yes" () "4")) ("yes" () "5" ("yes" () "6")))
+      (lambda (x) (equal? (get-tag-name x) "yes"))
+    )
+
+    (("yes" () "1") ("yes" () "3") ("yes" () "4") ("yes" () "5" ("yes" () "6")))
+  )
+
+  ("Get text"
+    (get-text '("root" () "a" ("z" () "b") "c" ("y" () "d" ("x" () "e")) "f"))
+    "acf"
+  )
+
+  ("Recursively get text"
+    (get-text-rec '("root" () "a" ("z" () "b") "c" ("y" () "d" ("x" () "e")) "f"))
+    "abcdef"
+  )
+
+  ("Sort"
+    (sort
+     '(("a" () "p") ("b" () "n") ("c" () "o") ("d" () "m"))
+      (make-comparison-int
+        (list
+          (make-comparison-string-int value-of-text)
+    ) ) )
+
+    (("d" () "m") ("b" () "n") ("c" () "o") ("a" () "p"))
+  )
+
+  ("Reverse sort"
+    (sort
+     '( ("a" (("up"."1") ("down"."1")))
+        ("b" (("up"."3") ("down"."0")))
+        ("c" (("up"."2") ("down"."1")))
+        ("d" (("up"."2") ("down"."0")))
+        ("e" (("up"."1") ("down"."0")))
+        ("f" (("up"."3") ("down"."1")))
+      )
+      (make-comparison-int-desc
+        (list
+          ;Double negative just for fun
+          (reverse-sort-order-int (make-comparison-number-int (make-value-of-attr "up")))
+          (make-comparison-number-int (make-value-of-attr "down"))
+    ) ) )
+
+    ( ("a" (("up"."1") ("down"."1")))
+      ("e" (("up"."1") ("down"."0")))
+      ("c" (("up"."2") ("down"."1")))
+      ("d" (("up"."2") ("down"."0")))
+      ("f" (("up"."3") ("down"."1")))
+      ("b" (("up"."3") ("down"."0")))
+) ) )
 
 ;Find the length of the longest name
 (define (longest x)
